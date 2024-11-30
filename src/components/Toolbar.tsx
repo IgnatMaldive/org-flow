@@ -4,21 +4,22 @@ import { blocksToOrg, blocksToMarkdown, parseOrgContent, parseMarkdownContent, d
 import { Document } from '../types'
 
 interface ToolbarProps {
-  document: Document
+  doc: Document
   onUpdate: (doc: Document) => void
 }
 
-export default function Toolbar({ document, onUpdate }: ToolbarProps) {
+export default function Toolbar({ doc, onUpdate }: ToolbarProps) {
   const [isEditingName, setIsEditingName] = useState(false)
-  const [name, setName] = useState(document.name)
+  const [name, setName] = useState(doc.name)
 
   const handleImport = async () => {
-    const input = document.createElement('input')
+    const input = globalThis.document.createElement('input') // Use globalThis.document to refer to the global document object
     input.type = 'file'
     input.accept = '.org,.md'
     
-    input.onchange = async (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0]
+    input.addEventListener('change', async (e: Event) => { // Use addEventListener with Event type
+      const target = e.target as HTMLInputElement
+      const file = target.files?.[0]
       if (!file) return
 
       const content = await file.text()
@@ -35,29 +36,29 @@ export default function Toolbar({ document, onUpdate }: ToolbarProps) {
       }
 
       onUpdate({
-        ...document,
+        ...doc,
         blocks,
         lastModified: Date.now()
       })
-    }
+    })
 
     input.click()
   }
 
   const handleExport = (format: 'org' | 'md') => {
     const content = format === 'org' 
-      ? blocksToOrg(document.blocks)
-      : blocksToMarkdown(document.blocks)
+      ? blocksToOrg(doc.blocks)
+      : blocksToMarkdown(doc.blocks)
     
-    const filename = `${document.name || 'document'}.${format}`
+    const filename = `${doc.name || 'document'}.${format}`
     downloadFile(content, filename)
   }
 
   const handleNameUpdate = () => {
     setIsEditingName(false)
-    if (name.trim() !== document.name) {
+    if (name.trim() !== doc.name) {
       onUpdate({
-        ...document,
+        ...doc,
         name: name.trim() || 'Untitled',
         lastModified: Date.now()
       })
@@ -76,7 +77,7 @@ export default function Toolbar({ document, onUpdate }: ToolbarProps) {
             onKeyDown={(e) => {
               if (e.key === 'Enter') handleNameUpdate()
               if (e.key === 'Escape') {
-                setName(document.name)
+                setName(doc.name)
                 setIsEditingName(false)
               }
             }}
@@ -88,7 +89,7 @@ export default function Toolbar({ document, onUpdate }: ToolbarProps) {
             onClick={() => setIsEditingName(true)}
             className="flex items-center gap-1.5 group"
           >
-            <span className="text-sm font-medium">{document.name || 'Untitled'}</span>
+            <span className="text-sm font-medium">{doc.name || 'Untitled'}</span>
             <Edit className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
           </button>
         )}

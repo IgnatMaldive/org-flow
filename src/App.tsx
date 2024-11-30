@@ -71,7 +71,7 @@ function App() {
           <h1 className="text-2xl font-mono mb-6 text-slate-200 px-1.5">OrgFlow</h1>
           {currentDocument && (
             <OrgDocument
-              document={currentDocument}
+              doc={currentDocument}
               onUpdate={handleUpdateDocument}
             />
           )}

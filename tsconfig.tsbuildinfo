@@ -1,0 +1,1 @@
+{"root":["./src/App.tsx","./src/main.tsx","./src/types.ts","./src/vite-env.d.ts","./src/components/FileList.tsx","./src/components/OrgBlock.tsx","./src/components/OrgDocument.tsx","./src/components/Toolbar.tsx","./src/utils/fileConversion.ts","./src/utils/storage.ts"],"version":"5.7.2"}

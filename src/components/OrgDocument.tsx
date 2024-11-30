@@ -4,12 +4,12 @@ import Toolbar from './Toolbar'
 import { Block, Document } from '../types'
 
 interface OrgDocumentProps {
-  document: Document
+  doc: Document
   onUpdate: (doc: Document) => void
 }
 
-export default function OrgDocument({ document, onUpdate }: OrgDocumentProps) {
-  const blocks = document.blocks
+export default function OrgDocument({ doc, onUpdate }: OrgDocumentProps) {
+  const blocks = doc.blocks
   const [focusedBlockId, setFocusedBlockId] = useState<string | null>(null)
 
   // Determine if a block should be visible based on its ancestors
@@ -35,7 +35,7 @@ export default function OrgDocument({ document, onUpdate }: OrgDocumentProps) {
 
   const updateDocument = (newBlocks: Block[]) => {
     onUpdate({
-      ...document,
+      ...doc,
       blocks: newBlocks,
       lastModified: Date.now()
     })
@@ -116,7 +116,7 @@ export default function OrgDocument({ document, onUpdate }: OrgDocumentProps) {
 
   return (
     <div>
-      <Toolbar document={document} onUpdate={onUpdate} />
+      <Toolbar doc={doc} onUpdate={onUpdate} />
       <div className="space-y-1 font-mono">
         {visibleBlocks.map((block, index) => (
           <OrgBlock
